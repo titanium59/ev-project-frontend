@@ -17,7 +17,10 @@
       <button @click="goToCreate" class="add-btn">Add New Charging Station</button>
     </div>
 
-    <!-- Filter Section -->
+    <!-- Mapbox Map -->
+    <div id="map" style="width: 100%; height: 500px; margin-bottom: 32px;"></div>
+
+    <!-- Filter Section (moved below map) -->
     <div class="filter-section">
       <label for="connectorType">Connector Type:</label>
       <select id="connectorType" v-model="selectedConnectorType" class="filter-select">
@@ -25,9 +28,6 @@
         <option v-for="type in connectorTypes" :key="type" :value="type">{{ type }}</option>
       </select>
     </div>
-
-    <!-- Mapbox Map -->
-    <div id="map" style="width: 100%; height: 500px; margin-bottom: 32px;"></div>
 
     <!-- Stations List -->
     <div v-if="filteredStations.length" class="stations-list">
