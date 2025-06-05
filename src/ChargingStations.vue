@@ -17,12 +17,21 @@
       <button @click="goToCreate" class="add-btn">Add New Charging Station</button>
     </div>
 
+    <!-- Filter Section -->
+    <div class="filter-section">
+      <label for="connectorType">Connector Type:</label>
+      <select id="connectorType" v-model="selectedConnectorType" class="filter-select">
+        <option value="">All</option>
+        <option v-for="type in connectorTypes" :key="type" :value="type">{{ type }}</option>
+      </select>
+    </div>
+
     <!-- Mapbox Map -->
     <div id="map" style="width: 100%; height: 500px; margin-bottom: 32px;"></div>
 
     <!-- Stations List -->
-    <div v-if="stations.length" class="stations-list">
-      <div v-for="station in stations" :key="station._id" class="station-card">
+    <div v-if="filteredStations.length" class="stations-list">
+      <div v-for="station in filteredStations" :key="station._id" class="station-card">
         <div @click="goToStation(station._id)" class="station-info">
           <div class="station-title">{{ station.name }}</div>
           <div><b>Location:</b> {{ station.location.coordinates.join(', ') }}</div>
@@ -43,22 +52,32 @@
 <script>
 import mapboxgl from 'mapbox-gl';
 
+const CONNECTOR_TYPES = ['Type1', 'Type2', 'CCS', 'CHAdeMO', 'Tesla'];
+
 export default {
   data() {
     return {
       stations: [],
       loggedInOwnerId: localStorage.getItem('ownerId'),
-      map: null
+      map: null,
+      selectedConnectorType: '',
+      connectorTypes: CONNECTOR_TYPES
     }
   },
   computed: {
     isLoggedIn() {
       return !!localStorage.getItem('token');
     },
+    filteredStations() {
+      if (!this.selectedConnectorType) return this.stations;
+      return this.stations.filter(
+        s => s.connectorType === this.selectedConnectorType
+      );
+    },
     geojsonStations() {
       return {
         type: "FeatureCollection",
-        features: this.stations
+        features: this.filteredStations
           .filter(station => station.location && station.location.coordinates)
           .map(station => ({
             type: "Feature",
@@ -79,7 +98,7 @@ export default {
     }
   },
   watch: {
-    stations: {
+    filteredStations: {
       handler() {
         if (this.map && this.map.getSource('stations')) {
           this.map.getSource('stations').setData(this.geojsonStations);
@@ -91,7 +110,7 @@ export default {
   mounted() {
     this.fetchStations();
     // Initialize Mapbox
-    mapboxgl.accessToken = process.env.VUE_APP_MAPBOX_TOKEN || 'pk.eyJ1IjoidGl0YW5pdW01OTYiLCJhIjoiY2w2bmIwNWxwMHRqOTNqbzcxNWxzN240ZCJ9.zpgHYiL8reD3OPg-t1_TuQ';
+    mapboxgl.accessToken = process.env.VUE_APP_MAPBOX_TOKEN;
     this.map = new mapboxgl.Map({
       container: 'map',
       style: 'mapbox://styles/mapbox/dark-v11',
@@ -310,6 +329,19 @@ export default {
 }
 .add-btn:hover {
   background: #1d4ed8;
+}
+
+.filter-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 18px 0 18px 32px;
+}
+.filter-select {
+  padding: 6px 12px;
+  border-radius: 4px;
+  border: 1px solid #d1d5db;
+  font-size: 1rem;
 }
 
 .stations-list {

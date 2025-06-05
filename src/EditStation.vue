@@ -23,7 +23,9 @@
             <input v-model.number="form.powerOutput" required type="number" class="form-input" />
           </label>
           <label>Connector Type:
-            <input v-model="form.connectorType" required class="form-input" />
+            <select v-model="form.connectorType" required class="form-input">
+              <option v-for="type in connectorTypes" :key="type" :value="type">{{ type }}</option>
+            </select>
           </label>
           <button type="submit" class="form-btn primary">Save</button>
         </form>
@@ -35,10 +37,13 @@
 </template>
 
 <script>
+const CONNECTOR_TYPES = ['Type1', 'Type2', 'CCS', 'CHAdeMO', 'Tesla'];
+
 export default {
   data() {
     return {
-      form: null
+      form: null,
+      connectorTypes: CONNECTOR_TYPES
     }
   },
   mounted() {
