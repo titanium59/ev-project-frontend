@@ -199,7 +199,7 @@ export default {
   },
   methods: {
     fetchStations() {
-      fetch('http://localhost:3000/stations')
+      fetch(`${process.env.VUE_APP_API_URL}/stations`)
         .then(res => res.json())
         .then(data => {
           this.stations = data
@@ -231,7 +231,7 @@ export default {
     },
     async deleteStation(id) {
       if (confirm('Are you sure you want to delete this station?')) {
-        await fetch(`http://localhost:3000/stations/${id}`, { 
+        await fetch(`${process.env.VUE_APP_API_URL}/stations/${id}`, { 
           method: 'DELETE',
           headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
         });

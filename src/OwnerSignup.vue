@@ -32,7 +32,7 @@ export default {
       this.error = '';
       this.success = '';
       try {
-        const res = await fetch('http://localhost:3000/owners/register', {
+        const res = await fetch(`${process.env.VUE_APP_API_URL}/owners/register`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({

@@ -61,7 +61,7 @@ export default {
         connectorType: this.form.connectorType,
         owner: localStorage.getItem('ownerId')
       };
-      await fetch('http://localhost:3000/stations', {
+      await fetch(`${process.env.VUE_APP_API_URL}/stations/`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',

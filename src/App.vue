@@ -12,7 +12,7 @@ export default {
     }
   },
   mounted() {
-    fetch('http://localhost:3000/')
+    fetch(`${process.env.VUE_APP_API_URL}`)
       .then(res => res.text())
       .then(data => {
         this.message = data

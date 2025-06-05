@@ -42,7 +42,7 @@ export default {
     }
   },
   mounted() {
-    fetch(`http://localhost:3000/stations/${this.$route.params.id}`)
+    fetch(`${process.env.VUE_APP_API_URL}/stations/${this.$route.params.id}`)
       .then(res => res.json())
       .then(data => {
         // Check if the logged-in owner is the station owner
@@ -74,7 +74,7 @@ export default {
         powerOutput: this.form.powerOutput,
         connectorType: this.form.connectorType
       };
-      await fetch(`http://localhost:3000/stations/${this.$route.params.id}`, {
+      await fetch(`${process.env.VUE_APP_API_URL}/stations/${this.$route.params.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

@@ -29,7 +29,7 @@ export default {
     async login() {
       this.error = '';
       try {
-        const res = await fetch('http://localhost:3000/owners/login', {
+        const res = await fetch(`${process.env.VUE_APP_API_URL}/owners/login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ name: this.name, password: this.password })
