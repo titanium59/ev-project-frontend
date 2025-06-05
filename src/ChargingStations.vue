@@ -12,8 +12,8 @@
       </div>
     </nav>
 
-    <!-- Add Station Button -->
-    <div class="center-btn">
+    <!-- Add Station Button (only visible when logged in) -->
+    <div class="center-btn" v-if="isLoggedIn">
       <button @click="goToCreate" class="add-btn">Add New Charging Station</button>
     </div>
 
@@ -182,11 +182,23 @@ export default {
       this.map.on('click', 'unclustered-point', (e) => {
         const coordinates = e.features[0].geometry.coordinates.slice();
         const props = e.features[0].properties;
-        let html = `<b>${props.name}</b><br>Status: ${props.status}<br>Power: ${props.powerOutput} kW<br>Connector: ${props.connectorType}`;
+        // Make station name clickable
+        let html = `<b><a href="#" class="station-link" data-id="${props.id}">${props.name}</a></b><br>Status: ${props.status}<br>Power: ${props.powerOutput} kW<br>Connector: ${props.connectorType}`;
         new mapboxgl.Popup()
           .setLngLat(coordinates)
           .setHTML(html)
           .addTo(this.map);
+
+        // Add event listener for the link after popup is added to DOM
+        setTimeout(() => {
+          const link = document.querySelector('.station-link');
+          if (link) {
+            link.addEventListener('click', (event) => {
+              event.preventDefault();
+              this.goToStation(props.id);
+            });
+          }
+        }, 0);
       });
 
       this.map.on('mouseenter', 'clusters', () => {
